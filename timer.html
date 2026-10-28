@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Timer | Dental Care Games</title>
+<style>
+:root{
+  --ink:#0E4B5A; --mint:#CFF3EA; --mint-deep:#9FE3D3; --enamel:#FFFDF7; --good:#22A55B; --bad:#E5484D; --sun:#FFC83D;
+  --red:#E5484D; --blue:#3B82F6; --green:#22A55B; --yellow:#F2B705;
+  --font: ui-rounded, "Arial Rounded MT Bold", "Nunito", "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{
+  font-family:var(--font); color:var(--ink); background-color:var(--mint);
+  background-image:linear-gradient(rgba(255,255,255,.55) 3px,transparent 3px),linear-gradient(90deg,rgba(255,255,255,.55) 3px,transparent 3px);
+  background-size:72px 72px; display:flex; flex-direction:column; overflow:hidden; user-select:none; -webkit-user-select:none;
+}
+button{font-family:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:5px solid var(--sun);outline-offset:3px}
+.art{display:block;width:100%;height:100%}
+
+/* top bar */
+.bar{display:flex;align-items:center;gap:2vmin;padding:1.4vmin 2vmin;background:var(--enamel);border-bottom:.6vmin solid var(--ink)}
+.bar h1{font-size:clamp(18px,3.6vmin,44px);margin:0;line-height:1.1;flex:0 1 auto}
+.home{flex:none;width:7vmin;height:7vmin;min-width:44px;min-height:44px;border-radius:50%;background:var(--mint);border:.5vmin solid var(--ink);display:grid;place-items:center;text-decoration:none}
+.home svg{width:60%;height:60%}
+#teams{margin-left:auto;display:flex;gap:1.2vmin}
+.team{position:relative;display:flex;align-items:center;gap:1vmin;padding:.8vmin 1.4vmin;border-radius:3vmin;border:.5vmin solid var(--ink);background:var(--c);color:#fff;font-weight:700;opacity:.55;transition:transform .2s,opacity .2s}
+.team.on{opacity:1;transform:translateY(.6vmin) scale(1.08);box-shadow:0 .8vmin 0 var(--ink)}
+.team .nm{font-size:clamp(12px,2.2vmin,26px);text-shadow:0 2px 0 rgba(0,0,0,.25)}
+.team .sc{font-size:clamp(18px,4vmin,48px);min-width:1.4em;text-align:center;background:#fff;color:var(--ink);border-radius:2vmin;padding:0 .8vmin;line-height:1.25}
+.team .adj{display:flex;flex-direction:column;gap:.3vmin}
+.team .adj button{width:3.2vmin;height:3.2vmin;min-width:22px;min-height:22px;border-radius:50%;border:.3vmin solid var(--ink);background:#fff;color:var(--ink);font-size:clamp(11px,2vmin,20px);line-height:1;padding:0;font-weight:800}
+.team.pop .sc{animation:pop .5s}
+@keyframes pop{40%{transform:scale(1.5)}}
+
+/* stage */
+#stage{flex:1;min-height:0;position:relative;display:flex;align-items:center;justify-content:center;padding:2.4vmin}
+.foot{display:flex;align-items:center;gap:1.4vmin;padding:1vmin 2vmin;background:var(--enamel);border-top:.6vmin solid var(--ink);font-size:clamp(12px,2.1vmin,22px)}
+.foot .sp{flex:1}
+.btn{border:.5vmin solid var(--ink);background:#fff;border-radius:3vmin;padding:1vmin 2.4vmin;font-size:clamp(14px,2.6vmin,30px);font-weight:700;box-shadow:0 .7vmin 0 var(--ink);transition:transform .08s,box-shadow .08s}
+.btn:active{transform:translateY(.5vmin);box-shadow:0 .2vmin 0 var(--ink)}
+.btn.small{font-size:clamp(12px,2vmin,20px);padding:.6vmin 1.6vmin;box-shadow:0 .4vmin 0 var(--ink)}
+.btn.go{background:var(--sun)}
+a.btn{color:var(--ink);text-decoration:none;display:inline-block}
+.btn.good{background:var(--good);color:#fff}
+.btn.bad{background:var(--bad);color:#fff}
+.btn[disabled]{opacity:.45;cursor:default}
+.card{background:var(--enamel);border:.6vmin solid var(--ink);border-radius:4vmin;box-shadow:0 1.2vmin 0 var(--ink)}
+.turn{font-size:clamp(16px,3.4vmin,40px);font-weight:700;padding:.6vmin 2.4vmin;border-radius:3vmin;border:.5vmin solid var(--ink);background:var(--c);color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.25)}
+.big{font-size:clamp(28px,8vmin,110px);font-weight:800;line-height:1}
+.phrase{font-size:clamp(20px,5vmin,64px);font-weight:700}
+.goodc{color:var(--good)} .badc{color:var(--bad)}
+.hidden{display:none !important}
+.shake{animation:shake .4s}
+@keyframes shake{20%{transform:translateX(-2vmin)}40%{transform:translateX(2vmin)}60%{transform:translateX(-1.2vmin)}80%{transform:translateX(1.2vmin)}}
+.pulse{animation:pulse .6s}
+@keyframes pulse{50%{transform:scale(1.05)}}
+
+/* overlay */
+.over{position:absolute;inset:0;background:rgba(14,75,90,.55);display:flex;align-items:center;justify-content:center;padding:3vmin;z-index:5}
+.panel{width:min(100%,150vmin);max-height:100%;padding:3vmin 4vmin;display:flex;flex-direction:column;align-items:center;gap:2vmin;text-align:center}
+.finish h2{font-size:clamp(28px,7vmin,96px);margin:0}
+.finish .rows{display:flex;gap:2vmin;align-items:flex-end}
+.finish .res{display:flex;flex-direction:column;align-items:center;gap:1vmin;font-weight:700;font-size:clamp(14px,2.8vmin,32px)}
+.finish .res .col{width:13vmin;border:.5vmin solid var(--ink);border-radius:2vmin 2vmin 0 0;background:var(--c);display:flex;align-items:flex-start;justify-content:center;color:#fff;font-size:clamp(22px,5vmin,64px);padding-top:.6vmin;text-shadow:0 2px 0 rgba(0,0,0,.25)}
+.finish .crown{width:9vmin;height:9vmin}
+.stars{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:6}
+.stars i{position:absolute;width:5vmin;height:5vmin;animation:fly 1.1s ease-out forwards}
+@keyframes fly{to{transform:translate(var(--dx),var(--dy)) rotate(260deg) scale(.4);opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s !important;transition-duration:.01s !important}}
+
+.tm{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4vmin}
+.time{font-size:clamp(80px,34vmin,460px);font-weight:800;line-height:.9;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.time.low{color:var(--bad)} .time.up{animation:pulse .6s 5}
+.tube{width:min(90%,150vmin);height:8vmin;border:.6vmin solid var(--ink);border-radius:5vmin;background:#fff;overflow:hidden;box-shadow:0 1.2vmin 0 var(--ink)}
+.tube i{display:block;height:100%;width:100%;border-right:.6vmin solid var(--ink);background:repeating-linear-gradient(115deg,#2EC4B6 0 5vmin,#fff 5vmin 10vmin,#E5484D 10vmin 15vmin,#fff 15vmin 20vmin)}
+.row{display:flex;gap:2.4vmin;align-items:center;justify-content:center;flex-wrap:wrap}
+#start{font-size:clamp(20px,5vmin,60px);padding:1.4vmin 6vmin}
+
+</style>
+</head>
+<body>
+<header class="bar">
+  <a class="home" href="index.html" aria-label="All games"><svg viewBox="0 0 60 60" aria-hidden="true"><path d="M8 30 L30 10 L52 30 M14 26 V50 H46 V26" fill="none" stroke="#0E4B5A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+  <h1>Timer</h1>
+  
+</header>
+<main id="stage">
+<div class="tm">
+  <div class="time" id="time">3:00</div>
+  <div class="tube"><i id="fill"></i></div>
+  <div class="row">
+    <button class="btn" id="minus" aria-label="One minute less">− 1 min</button>
+    <button class="btn go" id="start">Start</button>
+    <button class="btn" id="plus" aria-label="One minute more">+ 1 min</button>
+    <button class="btn" id="reset">Reset</button>
+  </div>
+</div>
+
+</main>
+<footer class="foot">
+  <span>Three minutes: each team sticks the stickers on its big poster.</span><span class="sp"></span>
+  
+  
+  <button class="btn small" id="btnFull">Full screen</button>
+</footer>
+<script>
+// Original pictures for the Dental Care games. Every picture is drawn in a 200 x 200 box.
+const INK = '#0E4B5A';
+const S = `stroke="${INK}" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"`;
+const S4 = `stroke="${INK}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"`;
+
+const TOOTH_PATH = 'M60 36 C36 36 26 60 31 92 C35 122 42 150 55 170 C64 183 75 171 79 150 C83 131 90 124 100 124 C110 124 117 131 121 150 C125 171 136 183 145 170 C158 150 165 122 169 92 C174 60 164 36 140 36 C124 36 116 46 100 46 C84 46 76 36 60 36 Z';
+
+function toothShape(fill) { return `<path d="${TOOTH_PATH}" fill="${fill}" ${S}/>`; }
+
+function kid(mouth) {
+  return `<circle cx="78" cy="110" r="54" fill="#FFD9B8" ${S}/>
+  <path d="M25 104 C20 62 52 44 80 46 C112 44 138 66 131 106 C120 86 102 74 78 78 C56 74 38 88 25 104 Z" fill="#5B3A29" ${S}/>
+  <circle cx="60" cy="110" r="5.5" fill="${INK}"/><circle cx="96" cy="110" r="5.5" fill="${INK}"/>
+  <circle cx="45" cy="127" r="8" fill="#FF9E8F" opacity=".75"/><circle cx="111" cy="127" r="8" fill="#FF9E8F" opacity=".75"/>
+  ${mouth}`;
+}
+const MOUTH_SMILE = `<path d="M56 131 Q78 156 100 131 Z" fill="#fff" ${S4}/>`;
+const MOUTH_OPEN = `<ellipse cx="78" cy="140" rx="14" ry="11" fill="#B3364A" ${S4}/>`;
+
+function candy(x, y, r, color, scale) {
+  return `<g transform="translate(${x},${y}) rotate(${r}) scale(${scale || 1})">
+    <path d="M-20 0 L-44 -15 L-44 15 Z" fill="${color}" ${S4}/><path d="M20 0 L44 -15 L44 15 Z" fill="${color}" ${S4}/>
+    <ellipse rx="25" ry="18" fill="${color}" ${S4}/>
+    <path d="M-8 -16 Q2 0 -8 16 M8 -16 Q18 0 8 16" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/></g>`;
+}
+function toothbrush(x, y, r, scale) {
+  return `<g transform="translate(${x},${y}) rotate(${r}) scale(${scale || 1})">
+    <rect x="20" y="-7" width="100" height="14" rx="7" fill="#3B82F6" ${S4}/>
+    <rect x="-10" y="-9" width="38" height="12" rx="4" fill="#3B82F6" ${S4}/>
+    <rect x="-8" y="-24" width="34" height="16" rx="4" fill="#fff" ${S4}/>
+    <path d="M1 -24 V-9 M9 -24 V-9 M17 -24 V-9" stroke="${INK}" stroke-width="2.5"/></g>`;
+}
+function pencil(x, y, r, scale, bites) {
+  const marks = bites ? `<path d="M30 -9 a7 7 0 0 0 14 0 Z M52 -9 a7 7 0 0 0 14 0 Z M40 9 a7 7 0 0 1 14 0 Z" fill="#8A5A2B" ${S4}/>` : '';
+  return `<g transform="translate(${x},${y}) rotate(${r}) scale(${scale || 1})">
+    <rect x="-14" y="-9" width="16" height="18" rx="4" fill="#FF8FA3" ${S4}/>
+    <rect x="2" y="-9" width="98" height="18" fill="#F5B300" ${S4}/>
+    <path d="M100 -9 L128 0 L100 9 Z" fill="#F3D2A9" ${S4}/><path d="M118 -3.4 L128 0 L118 3.4 Z" fill="${INK}"/>
+    ${marks}</g>`;
+}
+function star(cx, cy, r, fill) {
+  let d = '';
+  for (let i = 0; i < 10; i++) {
+    const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * 0.45 : r;
+    d += (i ? 'L' : 'M') + (cx + rr * Math.cos(a)).toFixed(1) + ' ' + (cy + rr * Math.sin(a)).toFixed(1) + ' ';
+  }
+  return `<path d="${d}Z" fill="${fill || '#FFC83D'}" ${S4}/>`;
+}
+function calendar(marks) {
+  let cells = '';
+  const pos = [[44, 92], [82, 92], [120, 92], [158, 92], [63, 132], [101, 132], [139, 132]];
+  pos.forEach(([x, y]) => {
+    cells += `<rect x="${x - 16}" y="${y - 16}" width="32" height="32" rx="6" fill="#fff" ${S4}/>`;
+    cells += marks === 'stars' ? star(x, y, 11, '#FFC83D').replace('stroke-width="4"', 'stroke-width="2.5"')
+      : `<path d="M${x - 8} ${y} l6 7 l11 -13" fill="none" stroke="#22A55B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`;
+  });
+  return `<rect x="18" y="34" width="166" height="136" rx="14" fill="#EAF6FF" ${S}/>
+    <path d="M18 66 H184 V48 a14 14 0 0 0 -14 -14 H32 a14 14 0 0 0 -14 14 Z" fill="#E5484D" ${S}/>
+    <path d="M56 24 V46 M146 24 V46" ${S}/>${cells}`;
+}
+
+const ART = {
+  toothHappy: () => `${toothShape('#FFFFFF')}
+    <circle cx="80" cy="80" r="6" fill="${INK}"/><circle cx="120" cy="80" r="6" fill="${INK}"/>
+    <path d="M78 98 Q100 120 122 98" fill="none" ${S}/>
+    <circle cx="64" cy="96" r="8" fill="#FF9E8F" opacity=".7"/><circle cx="136" cy="96" r="8" fill="#FF9E8F" opacity=".7"/>
+    ${star(160, 40, 15)}${star(36, 34, 10)}`,
+  toothSad: () => `${toothShape('#E9DFA8')}
+    <path d="M72 76 l14 6 M128 76 l-14 6" ${S}/>
+    <circle cx="80" cy="88" r="5.5" fill="${INK}"/><circle cx="120" cy="88" r="5.5" fill="${INK}"/>
+    <path d="M80 114 Q100 98 120 114" fill="none" ${S}/>
+    <ellipse cx="62" cy="64" rx="9" ry="7" fill="#7A5B2E"/><ellipse cx="140" cy="108" rx="8" ry="10" fill="#7A5B2E"/><circle cx="104" cy="60" r="5" fill="#7A5B2E"/>
+    <path d="M150 62 q8 14 0 20 q-8 -6 0 -20 Z" fill="#7CC4F5" ${S4}/>`,
+  brushA: () => `${kid(MOUTH_SMILE)}${toothbrush(88, 150, -14, 0.8)}
+    <circle cx="108" cy="150" r="9" fill="#fff" ${S4}/><circle cx="122" cy="160" r="6" fill="#fff" ${S4}/><circle cx="96" cy="162" r="5" fill="#fff" ${S4}/>`,
+  brushB: () => `${toothbrush(40, 78, 18, 1.15)}
+    <g transform="translate(60,140) rotate(-10)"><rect x="0" y="-22" width="92" height="44" rx="8" fill="#fff" ${S}/>
+    <rect x="16" y="-22" width="40" height="44" fill="#2EC4B6" ${S4}/><rect x="92" y="-12" width="18" height="24" rx="4" fill="#E5484D" ${S4}/>
+    <path d="M110 0 q16 -14 26 0 q-12 12 -26 0 Z" fill="#fff" ${S4}/></g>`,
+  candyA: () => `${kid(MOUTH_OPEN)}${candy(140, 146, -20, '#FF6B9D')}`,
+  candyB: () => `<path d="M118 108 L150 180" ${S}/>
+    <circle cx="106" cy="76" r="44" fill="#FF6B9D" ${S}/>
+    <path d="M106 76 m0 -8 a8 8 0 1 1 -8 8 a18 18 0 1 1 18 18 a28 28 0 1 1 -28 -28" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+    ${candy(52, 154, 14, '#FFC83D', 0.8)}${candy(160, 62, -30, '#7CC4F5', 0.62)}`,
+  dentistA: () => `<circle cx="92" cy="112" r="54" fill="#FFD9B8" ${S}/>
+    <path d="M40 96 C40 58 66 44 92 44 C118 44 144 58 144 96 C126 82 112 78 92 78 C72 78 58 82 40 96 Z" fill="#DFF3FF" ${S}/>
+    <path d="M92 52 v18 M83 61 h18" stroke="#22A55B" stroke-width="7" stroke-linecap="round"/>
+    <circle cx="74" cy="106" r="5.5" fill="${INK}"/><circle cx="110" cy="106" r="5.5" fill="${INK}"/>
+    <path d="M52 124 Q92 112 132 124 L128 150 Q92 172 56 150 Z" fill="#7CC4F5" ${S}/>
+    <path d="M52 126 L40 116 M132 126 L144 116" ${S4}/>
+    <path d="M150 186 L170 122" ${S}/><circle cx="172" cy="104" r="20" fill="#EAF6FF" ${S}/>`,
+  dentistB: () => `<g transform="translate(-14,12) scale(.86)">${toothShape('#FFFFFF')}
+    <circle cx="80" cy="82" r="6" fill="${INK}"/><circle cx="120" cy="82" r="6" fill="${INK}"/><path d="M80 100 Q100 118 120 100" fill="none" ${S}/></g>
+    <path d="M132 188 L158 108" ${S}/><circle cx="162" cy="90" r="24" fill="#EAF6FF" ${S}/>
+    <circle cx="44" cy="44" r="26" fill="#22A55B" ${S4}/><path d="M44 30 v28 M30 44 h28" stroke="#fff" stroke-width="9" stroke-linecap="round"/>`,
+  pencilA: () => `${kid(`<ellipse cx="78" cy="142" rx="17" ry="13" fill="#B3364A" ${S4}/>`)}${pencil(72, 143, -6, 0.86)}
+    <rect x="64" y="130" width="11" height="9" rx="2" fill="#fff" ${S4}/><rect x="80" y="130" width="11" height="9" rx="2" fill="#fff" ${S4}/>`,
+  pencilB: () => `${pencil(38, 150, -38, 1.18, true)}
+    <path d="M36 44 l10 12 M60 30 l4 15 M20 66 l14 6" ${S}/>`,
+  apple: () => `${kid(MOUTH_OPEN)}
+    <path d="M148 120 C128 104 104 122 110 150 C114 172 132 184 148 176 C164 184 182 172 186 150 C192 122 168 104 148 120 Z" fill="#E5484D" ${S}/>
+    <path d="M148 120 q-2 -16 10 -22" fill="none" ${S}/><path d="M158 100 q16 -10 24 2 q-14 10 -24 -2 Z" fill="#22A55B" ${S4}/>`,
+  soda: () => `${kid(MOUTH_OPEN)}
+    <path d="M118 112 L182 112 L172 186 L128 186 Z" fill="#8A4B2A" ${S}/>
+    <path d="M118 112 L182 112 L179 132 L121 132 Z" fill="#fff" ${S4}/>
+    <circle cx="140" cy="152" r="5" fill="#fff" opacity=".8"/><circle cx="158" cy="168" r="4" fill="#fff" opacity=".8"/><circle cx="160" cy="146" r="3" fill="#fff" opacity=".8"/>
+    <path d="M150 122 L138 96 L96 140" fill="none" stroke="#E5484D" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>`,
+  milk: () => `${kid(MOUTH_SMILE)}
+    <path d="M122 104 L180 104 L174 186 L128 186 Z" fill="#EAF6FF" ${S}/>
+    <path d="M124 128 L178 128 L174 186 L128 186 Z" fill="#fff" ${S4}/>
+    <path d="M58 133 q20 -10 40 0" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round"/>`,
+  chocolate: () => `${kid(MOUTH_OPEN)}
+    <g transform="translate(146,146) rotate(14)"><rect x="-34" y="-44" width="68" height="88" rx="6" fill="#6B3E26" ${S}/>
+    <path d="M-34 -14 H34 M-34 16 H34 M0 -44 V44" stroke="#8A5A3C" stroke-width="5"/>
+    <path d="M-34 10 H34 V44 a6 6 0 0 1 -6 6 H-28 a6 6 0 0 1 -6 -6 Z" fill="#F5B300" ${S4} transform="translate(0,-6)"/></g>`,
+  appleB: () => `<g transform="translate(-102,-80) scale(1.3)"><path d="M148 120 C128 104 104 122 110 150 C114 172 132 184 148 176 C164 184 182 172 186 150 C192 122 168 104 148 120 Z" fill="#E5484D" ${S4}/>
+    <path d="M148 120 q-2 -16 10 -22" fill="none" ${S4}/><path d="M158 100 q16 -10 24 2 q-14 10 -24 -2 Z" fill="#22A55B" ${S4}/></g>
+    <g transform="translate(75,72) scale(.62)"><path d="M148 120 C128 104 104 122 110 150 C114 172 132 184 148 176 C164 184 182 172 186 150 C192 122 168 104 148 120 Z" fill="#7BC74D" ${S}/>
+    <path d="M148 120 q-2 -16 10 -22" fill="none" ${S}/></g>
+    <path d="M70 100 q-8 12 0 24" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round"/>`,
+  milkB: () => `<path d="M40 72 L72 38 L104 72 Z" fill="#7CC4F5" ${S}/><rect x="40" y="72" width="64" height="112" rx="4" fill="#fff" ${S}/>
+    <rect x="40" y="112" width="64" height="34" fill="#7CC4F5" ${S4}/><circle cx="72" cy="129" r="9" fill="#fff" ${S4}/>
+    <path d="M124 98 L182 98 L174 186 L132 186 Z" fill="#EAF6FF" ${S}/><path d="M127 118 L179 118 L174 186 L132 186 Z" fill="#fff" ${S4}/>
+    <path d="M150 40 q10 16 0 24 q-10 -8 0 -24 Z" fill="#fff" ${S4}/>`,
+  sodaB: () => `<rect x="58" y="44" width="84" height="140" rx="16" fill="#E5484D" ${S}/>
+    <ellipse cx="100" cy="50" rx="40" ry="10" fill="#D9E2E8" ${S4}/><path d="M92 46 h16" ${S4}/>
+    <path d="M58 104 q21 -14 42 0 t42 0 v26 q-21 -14 -42 0 t-42 0 Z" fill="#fff" ${S4}/>
+    <circle cx="164" cy="64" r="9" fill="#fff" ${S4}/><circle cx="178" cy="98" r="6" fill="#fff" ${S4}/><circle cx="160" cy="34" r="5" fill="#fff" ${S4}/>
+    <circle cx="34" cy="80" r="7" fill="#fff" ${S4}/><circle cx="28" cy="116" r="4.5" fill="#fff" ${S4}/>`,
+  sun: () => `<g ${S}><path d="M100 14 V34 M100 166 V186 M14 100 H34 M166 100 H186 M39 39 L53 53 M147 147 L161 161 M39 161 L53 147 M147 53 L161 39"/></g>
+    <circle cx="100" cy="100" r="52" fill="#FFC83D" ${S}/>
+    <circle cx="82" cy="92" r="6" fill="${INK}"/><circle cx="118" cy="92" r="6" fill="${INK}"/><path d="M80 110 Q100 130 120 110" fill="none" ${S}/>`,
+  plate: () => `<circle cx="100" cy="104" r="62" fill="#fff" ${S}/><circle cx="100" cy="104" r="40" fill="#EAF6FF" ${S4}/>
+    <circle cx="88" cy="96" r="4" fill="#C98A4B"/><circle cx="112" cy="112" r="3.5" fill="#C98A4B"/><circle cx="104" cy="92" r="3" fill="#C98A4B"/>
+    <path d="M20 40 V84 M10 40 V68 a10 10 0 0 0 20 0 V40 M20 84 V172" fill="none" ${S}/>
+    <path d="M180 172 V92 M180 92 c-14 -8 -14 -44 0 -54 c14 10 14 46 0 54 Z" fill="#EAF6FF" ${S}/>`,
+  calendar: () => calendar('ticks'),
+  calendarStars: () => calendar('stars'),
+  star: () => `${star(100, 104, 78)}<circle cx="84" cy="98" r="6" fill="${INK}"/><circle cx="116" cy="98" r="6" fill="${INK}"/><path d="M84 116 Q100 132 116 116" fill="none" ${S}/>`,
+  ear: () => `<path d="M70 150 C40 120 44 50 100 44 C150 40 168 96 140 122 C126 134 126 150 116 162 C104 176 82 172 78 156" fill="#FFD9B8" ${S}/>
+    <path d="M84 116 C74 92 86 70 106 72 C126 74 130 96 116 106" fill="none" ${S}/>
+    <path d="M160 60 q14 20 0 40 M176 46 q24 34 0 68" fill="none" ${S}/>`,
+  thumbUp: () => `<path d="M40 96 H72 V172 H40 Z" fill="#fff" ${S}/><path d="M72 100 C92 86 96 62 96 40 C116 36 124 58 116 86 H152 C170 86 170 108 158 110 C170 114 168 132 154 134 C164 140 160 156 148 156 C154 164 148 174 136 174 H96 C84 174 80 168 72 166 Z" fill="#FFD9B8" ${S}/>`,
+};
+
+function artInner(key) { return (ART[key] || ART.star)(); }
+function art(key, cls) { return `<svg class="art ${cls || ''}" viewBox="0 0 200 200" aria-hidden="true">${artInner(key)}</svg>`; }
+
+// Shared engine: teacher model turn + four teams, sounds, finish screen.
+const TEAMS = [
+  { name: 'Red', color: 'var(--red)' }, { name: 'Blue', color: 'var(--blue)' },
+  { name: 'Green', color: 'var(--green)' }, { name: 'Yellow', color: 'var(--yellow)' },
+];
+const TEACHER = { name: 'Teacher', color: 'var(--ink)' };
+let turn = 0; // -1 = teacher's model round
+const $ = (s, el) => (el || document).querySelector(s);
+const el = (html) => { const t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstChild; };
+const who = (i) => (i < 0 ? TEACHER : TEAMS[i]);
+// Points are kept by the teacher on the board, so the games show no scores.
+function setTurn(i) { turn = i < 0 ? -1 : i % 4; document.dispatchEvent(new CustomEvent('turn')); }
+function nextTurn() { setTurn(turn < 0 ? 0 : turn + 1); }
+// Classes use groups 1-4 with no team names, so only the teacher's model turn shows a label.
+function turnChip() { return turn < 0 ? `<span class="turn" style="--c:${TEACHER.color}">Teacher</span>` : ''; }
+
+let AC;
+function tone(freq, dur, type, when, gain) {
+  try {
+    AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+    const o = AC.createOscillator(), g = AC.createGain();
+    o.type = type || 'sine'; o.frequency.value = freq; o.connect(g); g.connect(AC.destination);
+    const t = AC.currentTime + (when || 0);
+    g.gain.setValueAtTime(gain || 0.16, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    o.start(t); o.stop(t + dur);
+  } catch (e) { /* no sound available */ }
+}
+const sfx = {
+  good() { tone(523, .15); tone(659, .15, 'sine', .12); tone(784, .3, 'sine', .24); },
+  bad() { tone(196, .25, 'sawtooth', 0, .07); tone(147, .35, 'sawtooth', .18, .07); },
+  tap() { tone(440, .07, 'triangle'); },
+  tick() { tone(880, .05, 'square', 0, .05); },
+  win() { [523, 659, 784, 1047, 1319].forEach((f, i) => tone(f, .25, 'triangle', i * .14)); },
+};
+
+function burst() {
+  const box = el('<div class="stars"></div>');
+  for (let i = 0; i < 14; i++) {
+    const a = Math.random() * Math.PI * 2, d = 25 + Math.random() * 30;
+    const s = el(`<i style="left:50%;top:45%;--dx:${(Math.cos(a) * d).toFixed(0)}vmin;--dy:${(Math.sin(a) * d).toFixed(0)}vmin"><svg viewBox="0 0 200 200">${star(100, 100, 90)}</svg></i>`);
+    box.appendChild(s);
+  }
+  $('#stage').appendChild(box); setTimeout(() => box.remove(), 1200);
+}
+
+function showFinish(title) {
+  const o = el(`<div class="over"><div class="panel card finish"><h2>${title || 'Great job!'}</h2>
+    <div style="display:flex;gap:2vmin"><button class="btn" id="finAgain">Play again</button><a class="btn go" href="index.html" style="text-decoration:none">All games</a></div></div></div>`);
+  $('#stage').appendChild(o); $('#finAgain').onclick = () => location.reload(); sfx.win(); burst();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const again = $('#btnAgain'); if (again) again.onclick = () => location.reload();
+  const full = $('#btnFull'); if (full) full.onclick = () => {
+    if (document.fullscreenElement) document.exitFullscreen(); else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => {});
+  };
+});
+
+let total = 180, left = 180, endAt = 0, running = false, raf = 0, lastWhole = -1;
+function show() {
+  const s = Math.max(0, Math.ceil(left)), m = Math.floor(s / 60);
+  $('#time').textContent = left <= 0 ? "Time's up!" : `${m}:${String(s % 60).padStart(2, '0')}`;
+  $('#time').style.fontSize = left <= 0 ? 'clamp(48px,18vmin,240px)' : '';
+  $('#time').classList.toggle('low', left > 0 && left <= 10); $('#time').classList.toggle('up', left <= 0);
+  $('#fill').style.width = `${Math.max(0, left / total) * 100}%`;
+  $('#start').textContent = running ? 'Pause' : (left < total && left > 0 ? 'Go on' : 'Start');
+  if (running && s !== lastWhole && s <= 10 && s > 0) sfx.tick();
+  lastWhole = s;
+}
+function frame() {
+  if (!running) return;
+  left = (endAt - Date.now()) / 1000;
+  if (left <= 0) { left = 0; running = false; show(); sfx.win(); return; }
+  show(); raf = requestAnimationFrame(frame);
+}
+$('#start').onclick = () => {
+  if (left <= 0) return;
+  running = !running; if (running) { endAt = Date.now() + left * 1000; sfx.tap(); raf = requestAnimationFrame(frame); } else cancelAnimationFrame(raf);
+  show();
+};
+function setTotal(sec) { running = false; cancelAnimationFrame(raf); total = Math.min(900, Math.max(60, sec)); left = total; show(); }
+$('#minus').onclick = () => setTotal(total - 60); $('#plus').onclick = () => setTotal(total + 60); $('#reset').onclick = () => setTotal(total);
+show();
+
+</script>
+</body>
+</html>
