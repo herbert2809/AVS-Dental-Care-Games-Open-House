@@ -1,0 +1,12 @@
+.g3{width:100%;height:100%;display:flex;gap:3vmin;align-items:stretch;justify-content:center}
+.pile{flex:1 1 0;max-width:26%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4vmin;border:.6vmin solid var(--ink);border-radius:5vmin;background:var(--enamel);box-shadow:0 1.2vmin 0 var(--ink);padding:2vmin}
+.pile:active{transform:translateY(.8vmin);box-shadow:0 .4vmin 0 var(--ink)}
+#good{background:#E9FBEF} #bad{background:#FDECEC}
+.tooth{width:min(24vmin,90%);aspect-ratio:1}
+.got{display:grid;grid-template-columns:repeat(2,1fr);gap:.8vmin;width:70%;min-height:8vmin}
+.got svg{background:#fff;border:.3vmin solid var(--ink);border-radius:1.4vmin}
+.mid{flex:1 1 0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.4vmin;min-width:0;text-align:center}
+.cardpic{width:min(38vmin,84%);aspect-ratio:1;padding:2vmin;background:#fff}
+.dots{display:flex;gap:1vmin}
+.dots i{width:2.4vmin;height:2.4vmin;border-radius:50%;border:.4vmin solid var(--ink);background:#fff}
+.dots i.d{background:var(--ink)} .dots i.c{background:var(--sun)}

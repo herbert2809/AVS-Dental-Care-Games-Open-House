@@ -1,0 +1,20 @@
+.g5{width:100%;height:100%;display:flex;flex-direction:column;gap:6vmin;align-items:center;justify-content:center}
+.head{display:flex;gap:3vmin;align-items:center}
+.teeth{flex:0 1 auto;min-height:0;display:grid;grid-template-columns:repeat(5,1fr);gap:3vmin;width:min(100%,150vmin);align-items:center;align-content:center}
+.lucky{position:relative;display:block;width:100%;border:0;background:none;padding:0;aspect-ratio:1}
+.lucky svg{filter:drop-shadow(0 1.2vmin 0 var(--ink))}
+.lucky:active{transform:translateY(.8vmin)}
+.lucky .num{position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(40px,13vmin,170px);font-weight:800;padding-bottom:16%}
+.lucky.open{cursor:default}
+.lucky:disabled{opacity:.45;cursor:default}
+.lucky.teach .num{color:var(--ink)}
+.hint{min-height:1.3em;font-size:clamp(16px,3.6vmin,44px);font-weight:700;padding:.4vmin 2.4vmin;border-radius:3vmin;background:var(--mint);border:.5vmin dashed var(--ink)}
+.hint b{color:var(--sun);-webkit-text-stroke:.15vmin var(--ink);letter-spacing:.2em}
+.lucky.open .in{position:absolute;left:24%;top:16%;width:52%;height:52%}
+.lucky.open .tag{position:absolute;left:50%;bottom:-1vmin;transform:translateX(-50%);white-space:nowrap}
+.qpanel{flex-direction:row;gap:4vmin;width:min(100%,165vmin);padding:3vmin}
+.qpanel .pic{flex:none;width:min(66vmin,52%);aspect-ratio:1;background:#fff;border:.6vmin solid var(--ink);border-radius:4vmin;padding:1.5vmin}
+.qtext{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3vmin}
+.qpanel .hint{font-size:clamp(22px,5vmin,64px)}
+.qpanel #line{font-size:clamp(22px,5vmin,64px);min-height:2.4em}
+.row{display:flex;gap:2.4vmin;align-items:center;justify-content:center;flex-wrap:wrap}
