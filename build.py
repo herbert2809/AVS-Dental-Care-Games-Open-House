@@ -10,6 +10,7 @@ PAGES = [
     ('g1', 'game1-good-or-bad.html', 'Good or Bad for Your Teeth?', 'The teacher models tile 1. Then each team chooses a number and the teacher taps its answer.', False),
     ('g2', 'game2-listen-and-tap.html', 'Listen and Tap', 'Tap Listen to hear the phrase. One student taps the picture. Question 1 is the teacher\'s model.', False),
     ('g3', 'game3-happy-or-sad-tooth.html', 'Happy Tooth or Sad Tooth?', 'The class says the phrase. One player taps a tooth.', False),
+    ('g4tvo', 'game4-pop-and-say-tran-van-on.html', 'Pop and Say', 'Round 1 is the teacher\'s model. Pop the bubbles, tell your friend, then the team says it.', False),
     ('g4', 'game4-pop-and-say.html', 'Pop and Say', 'Round 1 is the teacher\'s model. Pop the bubbles, tell your friend, then the team says it.', False),
     ('g5', 'game5-lucky-tooth.html', 'Lucky Tooth', 'The teacher opens tooth T as a model. Then each team chooses a tooth and says the sentence.', False),
     ('timer', 'timer.html', 'Timer', 'Three minutes: each team sticks the stickers on its big poster.', False),
